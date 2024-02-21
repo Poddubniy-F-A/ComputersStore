@@ -2,12 +2,9 @@ package Example;
 
 import java.util.*;
 
-public class Main {
-    private static final int PROCESSOR_CODE = 1;
-    private static final int RAM_CODE = 2;
-    private static final int SYS_CODE = 3;
-    private static final int TOUCH_INPUT_CODE = 4;
+import static Example.Computer.*;
 
+public class Main {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -21,22 +18,22 @@ public class Main {
         findComputers(set);
     }
 
-    private static void findComputers(Set<Computer> set) {
+    private static void findComputers(Set<Computer> computers) {
         Map<Integer, Object> filters = getFilters();
 
-        for (Integer paramName : filters.keySet()) {
-            Object param = filters.get(paramName);
-            switch (paramName) {
-                case PROCESSOR_CODE -> set.removeIf(computer -> !param.equals(computer.getProcessorModelName()));
-                case RAM_CODE -> set.removeIf(computer -> (Integer) param > computer.getRAMSize());
-                case SYS_CODE -> set.removeIf(computer -> !param.equals(computer.getSystemType()));
-                case TOUCH_INPUT_CODE -> set.removeIf(computer -> !param.equals(computer.getTouchInputCapability()));
+        for (Integer filterCode : filters.keySet()) {
+            Object filter = filters.get(filterCode);
+            switch (filterCode) {
+                case PROCESSOR_CODE -> computers.removeIf(computer -> !filter.equals(computer.processorModelName()));
+                case RAM_CODE -> computers.removeIf(computer -> (Integer) filter > computer.RAMSize());
+                case SYS_CODE -> computers.removeIf(computer -> !filter.equals(computer.systemType()));
+                case TOUCH_INPUT_CODE -> computers.removeIf(computer -> !filter.equals(computer.touchInputCapability()));
             }
         }
 
         System.out.println("\nРезультат поиска:");
-        for (Computer computer : set) {
-            System.out.println(computer.getName());
+        for (Computer computer : computers) {
+            System.out.println(computer.name());
         }
     }
 
@@ -60,7 +57,8 @@ public class Main {
                 case RAM_CODE -> filters.put(RAM_CODE, scanner.nextInt());
                 case SYS_CODE -> filters.put(SYS_CODE, scanner.nextInt());
                 case TOUCH_INPUT_CODE -> filters.put(TOUCH_INPUT_CODE, scanner.next().equals("Y"));
-                case EXIT_CODE -> {}
+                case EXIT_CODE -> {
+                }
                 default -> System.out.println("Некорректный ввод");
             }
         } while (code != EXIT_CODE);
